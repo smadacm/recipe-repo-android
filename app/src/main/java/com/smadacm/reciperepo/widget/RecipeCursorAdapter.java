@@ -26,7 +26,8 @@ public class RecipeCursorAdapter extends CursorAdapter {
     }
 
     @Override
-    public void bindView(View view, Context context, Cursor cursor){
+    public void bindView(View viewRaw, Context context, Cursor cursor){
+        RecipeListItem view = (RecipeListItem) viewRaw;
         // Find fields to populate in inflated template
         TextView tvTitle = (TextView) view.findViewById(R.id.recipeListItemTitle);
         TextView tvSubtitle = (TextView) view.findViewById(R.id.recipeListItemSubtitle);
@@ -34,9 +35,12 @@ public class RecipeCursorAdapter extends CursorAdapter {
         // Extract properties from cursor
         String name = cursor.getString(cursor.getColumnIndexOrThrow("name"));
         String description = cursor.getString(cursor.getColumnIndexOrThrow("description"));
+        int id = cursor.getInt(cursor.getColumnIndexOrThrow("_id"));
 
         // Populate fields with extracted properties
         tvTitle.setText(name);
         tvSubtitle.setText(description);
+
+        view.setRecipeId(id);
     }
 }

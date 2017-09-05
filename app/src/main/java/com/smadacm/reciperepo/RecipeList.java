@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.CursorAdapter;
 import android.widget.ListView;
@@ -50,11 +51,14 @@ public class RecipeList extends AppCompatActivity {
             cur.moveToFirst();
             RecipeCursorAdapter adapter = new RecipeCursorAdapter(this, cur);
 
-//            String[] recipeArray = {"Deviled Eggs", "French Fries"};
-//            ArrayAdapter adapter = new ArrayAdapter<String>(this, R.layout.activity_recipe_list_item_text, recipeArray);
-
             ListView listView = (ListView) findViewById(R.id.recipe_list_list);
             listView.setAdapter(adapter);
+            listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                    int ii = 0; // A line on which I can set a breakpoint
+                }
+            });
         } catch (Exception e){
             Log.e("RecipeRepo: " + e.getClass().getName(), e.getMessage(), e);
             throw e;
