@@ -6,7 +6,9 @@ import android.text.TextUtils;
 
 import com.smadacm.reciperepo.db.DbHelper;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -26,6 +28,8 @@ public abstract class AbstractModel {
         this.context = context;
         this.dbHelper = new DbHelper(context);
         this.columns = new ArrayList<>();
+
+        this.setupColumns();
     }
 
     public AbstractModel(Context context, HashMap<String, String> record){
@@ -33,37 +37,100 @@ public abstract class AbstractModel {
         this.dbHelper = new DbHelper(context);
         this.columns = new ArrayList<>();
 
+        this.setupColumns();
         this.loadByRecord(record);
     }
+
+    public String getTableName() { return this.tableName; }
+    public List<String> getColumns() { return this.columns; }
 
     protected abstract void setupColumns();
 
     public int getId(){ return _id; }
 
     public boolean load(int id){
+        this.beforeLoad();
         HashMap<String, String> wheres = new HashMap<String, String>();
         wheres.put("_id", Integer.valueOf(id).toString());
-        return this.load(wheres);
+        boolean ret = this.load(wheres);
+        this.afterLoad();
+        return ret;
     }
     public boolean load(HashMap<String, String> wheres){
-        Cursor cur = this.dbHelper.selectItem(this.tableName, this.columns, wheres);
+        this.beforeLoad();
+        HashMap<String, String> cols = this.prepColumnsForUpsert();
+        Cursor cur = this.dbHelper.selectItem(this.tableName, this.sqlColumns(), wheres);
         if(cur.getCount() != 1){
             return false;
         }
+        cur.moveToFirst();
         for(int i = 0; i < cur.getColumnCount(); i++){
             String colName = cur.getColumnName(i);
             GetFieldReturn fieldReturn = this.getFieldByName(colName);
-            if(fieldReturn.isInt()){
-                this.set(fieldReturn.field, cur.getInt(i));
-            } else if(fieldReturn.isLong()){
-                this.set(fieldReturn.field, cur.getLong(i));
-            } else if(fieldReturn.isString()){
-                this.set(fieldReturn.field, cur.getString(i));
+            if(fieldReturn != null){
+                if(fieldReturn.isInt()){
+                    this.set(fieldReturn.field, cur.getInt(i));
+                } else if(fieldReturn.isLong()){
+                    this.set(fieldReturn.field, cur.getLong(i));
+                } else if(fieldReturn.isString()){
+                    this.set(fieldReturn.field, cur.getString(i));
+                }
+            } else if(colName.equals("_id")) {
+                this._id = cur.getInt(i);;
             }
         }
+        this.afterLoad();
         return true;
     }
+    public static List<AbstractModel> loadMany(Context context, Class<? extends AbstractModel> cls, HashMap<String, String> wheres){
+        String tableName = "";
+        List<String> columns = null;
+        try {
+            Constructor<?> constructor = cls.getConstructor(Context.class);
+            AbstractModel modl = cls.cast(constructor.newInstance(context));
+            tableName = modl.getTableName();
+            columns = modl.sqlColumns();
+        } catch (NoSuchMethodException e){ // won't happen
+            int a = 1;
+        } catch (InstantiationException e){
+            int a = 2;
+        } catch (IllegalAccessException e){
+            int a = 3;
+        } catch (InvocationTargetException e){
+            int a = 4;
+        }
+
+        DbHelper dbHelper = new DbHelper(context);
+
+        List<AbstractModel> ret = new ArrayList<>();
+        Cursor cur = dbHelper.selectItem(tableName, columns, wheres);
+        if(cur != null){
+            cur.moveToFirst();
+            for(int rowI = 0; rowI < cur.getCount(); rowI++){
+                HashMap<String, String> record = new HashMap<>(columns.size());
+                for(int colI = 0; colI < cur.getColumnCount(); colI++){
+                    String key = cur.getColumnName(colI);
+                    String val = cur.getString(colI);
+                    record.put(key, val);
+                }
+                try {
+                    Constructor<?> constructor = cls.getConstructor(Context.class);
+                    AbstractModel modl = cls.cast(constructor.newInstance(context));
+
+                    modl.loadByRecord(record);
+                    ret.add(modl);
+                } catch (NoSuchMethodException e){ // won't happen
+                } catch (InstantiationException e){
+                } catch (IllegalAccessException e){
+                } catch (InvocationTargetException e){
+                }
+                cur.moveToNext();
+            }
+        }
+        return ret;
+    }
     protected boolean loadByRecord(HashMap<String, String> values){
+        this.beforeLoad();
         for (String key : values.keySet()) {
             GetFieldReturn fieldReturn = this.getFieldByName(key);
             String val = values.get(key);
@@ -76,17 +143,51 @@ public abstract class AbstractModel {
                 this.set(fieldReturn.field, val);
             }
         }
+        this.afterLoad();
         return true;
     }
 
+    protected void beforeLoad(){}
+    protected void afterLoad(){}
+
     public int save(){
+        this.beforeSave();
         HashMap<String, String> values = this.prepColumnsForUpsert();
         if(this._id > 0){
             this._id = this.dbHelper.insertItem(this.tableName, values);
         } else {
             this.dbHelper.updateItem(this.tableName, values);
         }
+        this.afterSave();
         return this._id;
+    }
+
+    protected void beforeSave(){}
+    protected void afterSave(){}
+
+    /**
+     * Gets current model's columns in the form:
+     *      sql-column -> value
+     */
+    protected List<String> sqlColumns(boolean all){
+        List<String> ret = new ArrayList<>();
+        if(all){
+            ret.add("_id");
+        }
+
+        GetFieldReturn fieldRet;
+        for(int i=0; i<this.columns.size(); i++){
+            String columnName = this.columns.get(i);
+            fieldRet = this.getFieldByName(columnName);
+            if(fieldRet == null) continue;
+
+            ret.add(fieldRet.dbColumnName);
+        }
+
+        return ret;
+    }
+    protected List<String> sqlColumns(){
+        return this.sqlColumns(true);
     }
 
     protected HashMap<String, String> prepColumnsForUpsert(){

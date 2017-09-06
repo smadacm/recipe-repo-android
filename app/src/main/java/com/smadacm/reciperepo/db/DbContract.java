@@ -32,14 +32,14 @@ public final class DbContract {
         public static final String TABLE_NAME = "recipe_ingredient";
         public static final String COLUMN_RECIPE_ID = "recipe_id";
         public static final String COLUMN_INGREDIENT = "ingredient";
-        public static final String COLUMN_ORDER = "sort";
+        public static final String COLUMN_SORT = "sort";
         public static final String COLUMN_REMOTE_ID = "remote_id";
     }
     public static class RecipeStep implements BaseColumns {
         public static final String TABLE_NAME = "recipe_step";
         public static final String COLUMN_RECIPE_ID = "recipe_id";
         public static final String COLUMN_INSTRUCTION = "instruction";
-        public static final String COLUMN_ORDER = "sort";
+        public static final String COLUMN_SORT = "sort";
         public static final String COLUMN_REMOTE_ID = "remote_id";
     }
     // TODO: To be sorted out later
@@ -90,7 +90,7 @@ public final class DbContract {
                     RecipeIngredient._ID + " INTEGER PRIMARY KEY," +
                     RecipeIngredient.COLUMN_RECIPE_ID + " INTEGER," +
                     RecipeIngredient.COLUMN_INGREDIENT + " TEXT," +
-                    RecipeIngredient.COLUMN_ORDER + " INTEGER," +
+                    RecipeIngredient.COLUMN_SORT + " INTEGER," +
                     RecipeIngredient.COLUMN_REMOTE_ID + " INTEGER UNIQUE" +
                     ")";
     public static final String SQL_CREATE_RECIPE_STEP =
@@ -98,7 +98,7 @@ public final class DbContract {
                     RecipeStep._ID + " INTEGER PRIMARY KEY," +
                     RecipeStep.COLUMN_INSTRUCTION + " TEXT," +
                     RecipeStep.COLUMN_RECIPE_ID + " INTEGER," +
-                    RecipeStep.COLUMN_ORDER + " INTEGER," +
+                    RecipeStep.COLUMN_SORT + " INTEGER," +
                     RecipeStep.COLUMN_REMOTE_ID + " INTEGER UNIQUE" +
                     ")";
 

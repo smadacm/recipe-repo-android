@@ -1,24 +1,21 @@
 package com.smadacm.reciperepo;
 
-import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.CursorAdapter;
 import android.widget.ListView;
 
 import com.smadacm.reciperepo.db.DbHelper;
+import com.smadacm.reciperepo.widget.RecipeListItem;
 import com.smadacm.reciperepo.widget.RecipeCursorAdapter;
 
-import java.util.List;
-
 public class RecipeList extends AppCompatActivity {
+
+    public static int REQUEST_CODE_VIEW_RECIPE = 1;
 
     protected DbHelper dbHelper;
 
@@ -31,6 +28,7 @@ public class RecipeList extends AppCompatActivity {
 
         try {
             this.dbHelper = new DbHelper(this);
+            this.dbHelper.populateDb();
 
             StringBuilder msg = new StringBuilder();
             Cursor cur = dbHelper.getCursorByQuery("SELECT _id, name, description FROM recipe ORDER BY _id DESC");
@@ -56,7 +54,11 @@ public class RecipeList extends AppCompatActivity {
             listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                    RecipeListItem rli = (RecipeListItem) view;
                     int ii = 0; // A line on which I can set a breakpoint
+                    Intent intent = new Intent(RecipeList.this, ViewRecipe.class);
+                    intent.putExtra("recipe_id", rli.getRecipeId());
+                    startActivityForResult(intent, RecipeList.REQUEST_CODE_VIEW_RECIPE);
                 }
             });
         } catch (Exception e){

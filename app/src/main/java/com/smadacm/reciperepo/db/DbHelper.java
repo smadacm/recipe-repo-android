@@ -47,7 +47,7 @@ public class DbHelper extends SQLiteOpenHelper {
 //        if(!this.isReady()){
 //            this.onCreate(db);
 //        }
-        this.populateDb();
+//        this.populateDb();
     }
     public void onCreate(SQLiteDatabase db) {
         this.populateDb();
@@ -108,7 +108,7 @@ public class DbHelper extends SQLiteOpenHelper {
         alert.show();
     }
 
-    protected void populateDb(){
+    public void populateDb(){
         if(!this.populateRunning){
             this.populateRunning = true;
             this.dropAllTables();
@@ -137,6 +137,36 @@ public class DbHelper extends SQLiteOpenHelper {
             values.put(Recipe.COLUMN_MEAL_TYPE_ID, mealRowId);
             values.put(Recipe.COLUMN_OWNER_NAME, "Christopher");
             rowId = this.db.insert(DbContract.Recipe.TABLE_NAME, null, values);
+
+            values.put(RecipeIngredient.COLUMN_INGREDIENT, "Eggs");
+            values.put(RecipeIngredient.COLUMN_RECIPE_ID, rowId);
+            values.put(RecipeIngredient.COLUMN_SORT, 10);
+            this.db.insert(DbContract.RecipeIngredient.TABLE_NAME, null, values);
+
+            values.put(RecipeIngredient.COLUMN_INGREDIENT, "Mayo");
+            values.put(RecipeIngredient.COLUMN_RECIPE_ID, rowId);
+            values.put(RecipeIngredient.COLUMN_SORT, 20);
+            this.db.insert(DbContract.RecipeIngredient.TABLE_NAME, null, values);
+
+            values.put(RecipeIngredient.COLUMN_INGREDIENT, "Salt");
+            values.put(RecipeIngredient.COLUMN_RECIPE_ID, rowId);
+            values.put(RecipeIngredient.COLUMN_SORT, 30);
+            this.db.insert(DbContract.RecipeIngredient.TABLE_NAME, null, values);
+
+            values.put(RecipeStep.COLUMN_INSTRUCTION, "Boil Eggs");
+            values.put(RecipeStep.COLUMN_RECIPE_ID, rowId);
+            values.put(RecipeStep.COLUMN_SORT, 10);
+            this.db.insert(DbContract.RecipeStep.TABLE_NAME, null, values);
+
+            values.put(RecipeStep.COLUMN_INSTRUCTION, "Mash Eggs");
+            values.put(RecipeStep.COLUMN_RECIPE_ID, rowId);
+            values.put(RecipeStep.COLUMN_SORT, 20);
+            this.db.insert(DbContract.RecipeStep.TABLE_NAME, null, values);
+
+            values.put(RecipeStep.COLUMN_INSTRUCTION, "Mix in Mayo and Salt");
+            values.put(RecipeStep.COLUMN_RECIPE_ID, rowId);
+            values.put(RecipeStep.COLUMN_SORT, 30);
+            this.db.insert(DbContract.RecipeStep.TABLE_NAME, null, values);
 
             values = new ContentValues(7);
             values.put(Recipe.COLUMN_NAME, "French Fries");
@@ -189,7 +219,17 @@ public class DbHelper extends SQLiteOpenHelper {
             whereArgs.add(wheres.get(key));
         }
         String where = TextUtils.join(", ", whereCols);
-        return this.db.query(tableName, columns.toArray(new String[columns.size()]), where, whereArgs.toArray(new String[whereArgs.size()]), null, null, null);
+
+        String[] columnsArr = new String[columns.size()];
+        for(int i = 0; i < columns.size(); i++){
+            columnsArr[i] = columns.get(i);
+        }
+
+        String[] whereArgsArr = new String[whereArgs.size()];
+        for(int i = 0; i < whereArgs.size(); i++){
+            whereArgsArr[i] = whereArgs.get(i);
+        }
+        return this.db.query(tableName, columnsArr, where, whereArgsArr, null, null, null);
     }
 
     public Cursor getCursorByQuery(String qry, String[] args){
