@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.smadacm.reciperepo.RecipeList">
+    tools:context="com.smadacm.reciperepo.views.list.RecipeList">
 
     <ListView
         android:id="@+id/recipe_list_list"

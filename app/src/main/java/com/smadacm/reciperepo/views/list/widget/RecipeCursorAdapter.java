@@ -1,4 +1,4 @@
-package com.smadacm.reciperepo.widget;
+package com.smadacm.reciperepo.views.list.widget;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -9,6 +9,7 @@ import android.widget.CursorAdapter;
 import android.widget.TextView;
 
 import com.smadacm.reciperepo.R;
+import com.smadacm.reciperepo.views.list.widget.layout.RecipeListItem;
 
 public class RecipeCursorAdapter extends CursorAdapter {
     protected LayoutInflater cursorInflator;
@@ -22,7 +23,7 @@ public class RecipeCursorAdapter extends CursorAdapter {
     // you don't bind any data to the view at this point.
     @Override
     public View newView(Context context, Cursor cursor, ViewGroup parent){
-        return this.cursorInflator.inflate(R.layout.activity_recipe_list_item, parent, false);
+        return this.cursorInflator.inflate(R.layout.recipe_list_item, parent, false);
     }
 
     @Override

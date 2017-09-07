@@ -116,7 +116,7 @@ public class DbHelper extends SQLiteOpenHelper {
 
 
             ContentValues values;
-            long rowId;
+            long recipeId;
             long dishRowId;
             long mealRowId;
 
@@ -136,35 +136,41 @@ public class DbHelper extends SQLiteOpenHelper {
             values.put(Recipe.COLUMN_DISH_TYPE_ID, dishRowId);
             values.put(Recipe.COLUMN_MEAL_TYPE_ID, mealRowId);
             values.put(Recipe.COLUMN_OWNER_NAME, "Christopher");
-            rowId = this.db.insert(DbContract.Recipe.TABLE_NAME, null, values);
+            recipeId = this.db.insert(DbContract.Recipe.TABLE_NAME, null, values);
 
+            values = new ContentValues(3);
             values.put(RecipeIngredient.COLUMN_INGREDIENT, "Eggs");
-            values.put(RecipeIngredient.COLUMN_RECIPE_ID, rowId);
+            values.put(RecipeIngredient.COLUMN_RECIPE_ID, recipeId);
             values.put(RecipeIngredient.COLUMN_SORT, 10);
             this.db.insert(DbContract.RecipeIngredient.TABLE_NAME, null, values);
 
+            values = new ContentValues(3);
             values.put(RecipeIngredient.COLUMN_INGREDIENT, "Mayo");
-            values.put(RecipeIngredient.COLUMN_RECIPE_ID, rowId);
+            values.put(RecipeIngredient.COLUMN_RECIPE_ID, recipeId);
             values.put(RecipeIngredient.COLUMN_SORT, 20);
             this.db.insert(DbContract.RecipeIngredient.TABLE_NAME, null, values);
 
+            values = new ContentValues(3);
             values.put(RecipeIngredient.COLUMN_INGREDIENT, "Salt");
-            values.put(RecipeIngredient.COLUMN_RECIPE_ID, rowId);
+            values.put(RecipeIngredient.COLUMN_RECIPE_ID, recipeId);
             values.put(RecipeIngredient.COLUMN_SORT, 30);
             this.db.insert(DbContract.RecipeIngredient.TABLE_NAME, null, values);
 
+            values = new ContentValues(3);
             values.put(RecipeStep.COLUMN_INSTRUCTION, "Boil Eggs");
-            values.put(RecipeStep.COLUMN_RECIPE_ID, rowId);
+            values.put(RecipeStep.COLUMN_RECIPE_ID, recipeId);
             values.put(RecipeStep.COLUMN_SORT, 10);
             this.db.insert(DbContract.RecipeStep.TABLE_NAME, null, values);
 
+            values = new ContentValues(3);
             values.put(RecipeStep.COLUMN_INSTRUCTION, "Mash Eggs");
-            values.put(RecipeStep.COLUMN_RECIPE_ID, rowId);
+            values.put(RecipeStep.COLUMN_RECIPE_ID, recipeId);
             values.put(RecipeStep.COLUMN_SORT, 20);
             this.db.insert(DbContract.RecipeStep.TABLE_NAME, null, values);
 
+            values = new ContentValues(3);
             values.put(RecipeStep.COLUMN_INSTRUCTION, "Mix in Mayo and Salt");
-            values.put(RecipeStep.COLUMN_RECIPE_ID, rowId);
+            values.put(RecipeStep.COLUMN_RECIPE_ID, recipeId);
             values.put(RecipeStep.COLUMN_SORT, 30);
             this.db.insert(DbContract.RecipeStep.TABLE_NAME, null, values);
 
@@ -176,7 +182,7 @@ public class DbHelper extends SQLiteOpenHelper {
             values.put(Recipe.COLUMN_DISH_TYPE_ID, dishRowId);
             values.put(Recipe.COLUMN_MEAL_TYPE_ID, mealRowId);
             values.put(Recipe.COLUMN_OWNER_NAME, "Christopher");
-            rowId = this.db.insert(DbContract.Recipe.TABLE_NAME, null, values);
+            recipeId = this.db.insert(DbContract.Recipe.TABLE_NAME, null, values);
         }
     }
 

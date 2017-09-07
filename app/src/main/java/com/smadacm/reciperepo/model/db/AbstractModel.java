@@ -3,6 +3,7 @@ package com.smadacm.reciperepo.model.db;
 import android.content.Context;
 import android.database.Cursor;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.smadacm.reciperepo.db.DbHelper;
 
@@ -132,9 +133,16 @@ public abstract class AbstractModel {
     protected boolean loadByRecord(HashMap<String, String> values){
         this.beforeLoad();
         for (String key : values.keySet()) {
+            if(key.equals("_id")){
+                this._id = Integer.valueOf(values.get(key));
+                continue;
+            }
             GetFieldReturn fieldReturn = this.getFieldByName(key);
             String val = values.get(key);
 
+            if(val == null){ // separate if statement to get Android Studio to stop being mad
+                continue;
+            }
             if(fieldReturn.isInt()){
                 this.set(fieldReturn.field, Integer.valueOf(val));
             } else if(fieldReturn.isLong()){

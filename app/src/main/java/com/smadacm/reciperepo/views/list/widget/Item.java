@@ -1,19 +1,17 @@
-package com.smadacm.reciperepo;
+package com.smadacm.reciperepo.views.list.widget;
 
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-import android.view.View;
 
-public class RecipeListItem extends AppCompatActivity {
+import com.smadacm.reciperepo.R;
+
+public class Item extends AppCompatActivity {
     protected int itemId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_recipe_list_item);
+        setContentView(R.layout.recipe_list_item);
     }
 
     public void setItemId(int id){

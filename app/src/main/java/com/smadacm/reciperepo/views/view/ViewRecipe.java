@@ -1,24 +1,23 @@
-package com.smadacm.reciperepo;
+package com.smadacm.reciperepo.views.view;
 
-import android.database.DataSetObserver;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.ExpandableListAdapter;
 import android.widget.ExpandableListView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.smadacm.reciperepo.R;
 import com.smadacm.reciperepo.model.db.Recipe;
 import com.smadacm.reciperepo.model.db.RecipeIngredient;
 import com.smadacm.reciperepo.model.db.RecipeStep;
+import com.smadacm.reciperepo.views.view.widget.parts.ExpandableListAdapter;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 
 public class ViewRecipe extends AppCompatActivity {
@@ -33,7 +32,11 @@ public class ViewRecipe extends AppCompatActivity {
     protected TextView descriptionTarget;
 //    protected ExpandableListView ingredientsTarget;
 //    protected ExpandableListView stepsTarget;
-    protected ListView partsTarget;
+    protected ExpandableListView partsTarget;
+
+    protected HashMap<String, List<String>> partsAll;
+    protected List<String> partsHeader;
+    protected ExpandableListAdapter partsAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,25 +64,21 @@ public class ViewRecipe extends AppCompatActivity {
         this.descriptionTarget = (TextView) findViewById(R.id.recipeDescription);
 //        this.ingredientsTarget = (ExpandableListView) findViewById(R.id.recipeIngredients);
 //        this.stepsTarget = (ExpandableListView) findViewById(R.id.recipeSteps);
-        this.partsTarget = (ListView) findViewById(R.id.recipeParts);
+        this.partsTarget = (ExpandableListView) findViewById(R.id.recipeParts);
 
     }
 
     protected void populateTargets(){
         this.descriptionTarget.setText(this.recipe.getDescription());
 
-        List<String> piecesList = new ArrayList<>(this.recipeIngredientList.size() + this.recipeStepList.size() + 2);
+        this.partsAdapter = new ExpandableListAdapter(this, this.partsHeader, this.partsAll);
+        this.partsTarget.setAdapter(this.partsAdapter);
 
-        piecesList.add("Ingredients");
-        for(int i = 0; i < this.recipeIngredientList.size(); i++){
-            piecesList.add(this.recipeIngredientList.get(i).getIngredient());
-        }
-        piecesList.add("Steps");
-        for(int i = 0; i < this.recipeIngredientList.size(); i++){
-            piecesList.add(this.recipeIngredientList.get(i).getIngredient());
+        for(int i = 0; i < this.partsHeader.size(); i++){
+            this.partsTarget.expandGroup(i);
         }
 
-        this.partsTarget.setAdapter(new ArrayAdapter(this, android.R.layout.simple_list_item_1, piecesList));
+        setTitle(recipe.getName());
     }
 
     protected void loadData(int recipeId){
@@ -103,6 +102,20 @@ public class ViewRecipe extends AppCompatActivity {
             }
         });
 
-        setTitle(recipe.getName());
+        this.partsAll = new HashMap<>(2);
+
+        List<String> childTmp = new ArrayList<>(this.recipeIngredientList.size());
+        for(int i = 0; i < this.recipeIngredientList.size(); i++){
+            childTmp.add(this.recipeIngredientList.get(i).getIngredient());
+        }
+        this.partsAll.put("Ingredients", childTmp);
+
+        childTmp = new ArrayList<>(this.recipeStepList.size());
+        for(int i = 0; i < this.recipeStepList.size(); i++){
+            childTmp.add(this.recipeStepList.get(i).getInstruction());
+        }
+        this.partsAll.put("Steps", childTmp);
+
+        this.partsHeader = new ArrayList<>(this.partsAll.keySet());
     }
 }

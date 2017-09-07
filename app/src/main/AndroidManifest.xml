@@ -16,7 +16,7 @@
         tools:replace="android:icon">
 
         <!-- Activities -->
-        <activity android:name=".RecipeList">
+        <activity android:name=".views.list.RecipeList">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -24,10 +24,12 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".RecipeListItem"
+            android:name=".views.list.widget.Item"
             android:label="@string/title_activity_recipe_list_item"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".ViewRecipe"></activity>
+        <activity android:name=".views.view.ViewRecipe" />
+        <activity android:name=".views.view.widget.parts.Item" />
+        <activity android:name=".views.view.widget.parts.Header"></activity>
     </application>
 
 </manifest>

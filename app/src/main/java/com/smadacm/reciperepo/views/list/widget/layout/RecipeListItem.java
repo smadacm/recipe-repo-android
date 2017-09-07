@@ -1,4 +1,4 @@
-package com.smadacm.reciperepo.widget;
+package com.smadacm.reciperepo.views.list.widget.layout;
 
 import android.content.Context;
 import android.util.AttributeSet;

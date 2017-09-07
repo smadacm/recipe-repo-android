@@ -1,4 +1,4 @@
-package com.smadacm.reciperepo;
+package com.smadacm.reciperepo.views.list;
 
 import android.content.Intent;
 import android.database.Cursor;
@@ -9,9 +9,11 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
+import com.smadacm.reciperepo.R;
 import com.smadacm.reciperepo.db.DbHelper;
-import com.smadacm.reciperepo.widget.RecipeListItem;
-import com.smadacm.reciperepo.widget.RecipeCursorAdapter;
+import com.smadacm.reciperepo.views.view.ViewRecipe;
+import com.smadacm.reciperepo.views.list.widget.layout.RecipeListItem;
+import com.smadacm.reciperepo.views.list.widget.RecipeCursorAdapter;
 
 public class RecipeList extends AppCompatActivity {
 
